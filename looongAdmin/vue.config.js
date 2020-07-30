@@ -1,4 +1,8 @@
 const webpack = require('webpack')
+// const path = require('path')
+const CompressionWebpackPlugin = require('compression-webpack-plugin')
+const productionGzipExtensions = ['js', 'css']
+// const isProduction = process.env.NODE_ENV === 'production'
 module.exports = {
   //部署应用包时的基本 URL
   publicPath: process.env.NODE_ENV === 'production' ? '/looongAdmin/dist/' : './',
@@ -7,14 +11,52 @@ module.exports = {
   //放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录
   assetsDir: 'assets',
   // eslint-loader 是否在保存的时候检查 安装@vue/cli-plugin-eslint有效
-  lintOnSave: true,
+  lintOnSave: false,
   //是否使用包含运行时编译器的 Vue 构建版本。设置true后你就可以在使用template
   runtimeCompiler: true,
   // 生产环境是否生成 sourceMap 文件 sourceMap的详解请看末尾  
-  productionSourceMap: true,
+  productionSourceMap: false,
   configureWebpack: config => {
     if (process.env.NODE_ENV === 'production') {
       // 为生产环境修改配置...
+      // optimization: {
+      //   splitChunks: false
+      // }
+      config.devtool = false;
+      config.plugins.push(
+        new CompressionWebpackPlugin({
+          filename: '[path].gz[query]', // 提示示compression-webpack-plugin@3.0.0的话asset改为filename
+          algorithm: 'gzip',
+          test: new RegExp('\\.(' + productionGzipExtensions.join('|') + ')$'),
+          threshold: 10240,
+          minRatio: 0.8
+        })
+      );
+
+      // 将每个依赖包打包成单独的js文件
+      // let optimization = {
+      //   runtimeChunk: 'single',
+      //   splitChunks: {
+      //     chunks: 'all',
+      //     maxInitialRequests: Infinity,
+      //     minSize: 20000, // 依赖包超过20000bit将被单独打包
+      //     cacheGroups: {
+      //       vendor: {
+      //         test: /[\\/]node_modules[\\/]/,
+      //         name (module) {
+      //           // get the name. E.g. node_modules/packageName/not/this/part.js
+      //           // or node_modules/packageName
+      //           const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]
+      //           // npm package names are URL-safe, but some servers don't like @ symbols
+      //           return `looongAdmin.${packageName.replace('@', '')}`
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+      // Object.assign(config, {
+      //   optimization
+      // })
     } else {
       // 为开发环境修改配置...
     }
@@ -88,6 +130,18 @@ module.exports = {
         prefix: false,
       })
       .end();
+    config.optimization.splitChunks({
+      cacheGroups: {
+        vendors: {
+          name: 'chunk-vendors',
+          minChunks: 4,
+          test: /node_modules/,
+          priority: -10,
+          chunks: 'initial'
+        },
+        common: {}
+      }
+    });
   }
 
 }

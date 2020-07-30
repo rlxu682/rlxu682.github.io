@@ -1,33 +1,42 @@
 <template>
-  <div class="layout">
+  <div class="layout layout-contanier">
     <Layout>
       <Header>
-        <Menu mode="horizontal" theme="dark" active-name="1">
-          <div class="layout-logo"></div>
-          <div class="layout-nav">
-            <MenuItem name="1">
-            <Icon type="ios-navigate"></Icon>
-            Item 1
-            </MenuItem>
-            <MenuItem name="2">
-            <Icon type="ios-keypad"></Icon>
-            Item 2
-            </MenuItem>
-            <MenuItem name="3">
-            <Icon type="ios-analytics"></Icon>
-            Item 3
-            </MenuItem>
-            <MenuItem name="4">
-            <Icon type="ios-paper"></Icon>
-            Item 4
-            </MenuItem>
+        <div class="layout-logo">looongAdmin</div>
+        <div class="layout-nav">
+          <div>
+            <Input class="searchInput" v-model="searchValue" placeholder="search something..." clearable style="width: 200px" />
           </div>
-        </Menu>
+          <div class="expand">
+            <Icon type="md-expand" />
+          </div>
+          <Dropdown>
+            <div class="avatar">
+              <Avatar src="https://i.loli.net/2017/08/21/599a521472424.jpg" />
+              <span>rlxu682</span>
+            </div>
+            <DropdownMenu slot="list">
+              <DropdownItem>驴打滚</DropdownItem>
+              <DropdownItem>炸酱面</DropdownItem>
+              <DropdownItem disabled>豆汁儿</DropdownItem>
+              <DropdownItem>冰糖葫芦</DropdownItem>
+              <DropdownItem divided>北京烤鸭</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
       </Header>
       <Layout>
         <Sider hide-trigger :style="{background: '#fff'}">
-          <Menu :active-name="activeMenu" theme="light" width="auto" :open-names="['1']">
-            <Submenu name="1">
+          <Menu :active-name="$route.name" theme="dark" width="auto" :open-names="['1']">
+            <MenuItem name="home" to="/home">
+            <Icon type="md-home"></Icon>
+            <span>首页</span>
+            </MenuItem>
+            <MenuItem name="encrypt" to="/encrypt">
+            <Icon type="ios-settings"></Icon>
+            <span>加密</span>
+            </MenuItem>
+            <!-- <Submenu name="1">
               <template slot="title">
                 <Icon type="ios-navigate"></Icon>
                 Item 1
@@ -43,13 +52,7 @@
               </template>
               <MenuItem name="2-1">Option 1</MenuItem>
               <MenuItem name="2-2">Option 2</MenuItem>
-            </Submenu>
-            <MenuItem name="Encrypt">
-            <router-link to="/encrypt">
-              <Icon type="ios-settings"></Icon>
-              <span>加密1</span>
-            </router-link>
-            </MenuItem>
+            </Submenu> -->
           </Menu>
         </Sider>
         <Layout :style="{padding: '0 24px 24px'}">
@@ -70,16 +73,17 @@
 export default {
   data() {
     return {
-      
+      searchValue: ''
     }
   },
   components: {
 
   },
   computed: {
-    activeMenu: function () {
-      return this.$route.name;
-    }
+    // activeMenu: function() {
+    //   console.log(this.$route.name)
+    //   return this.$route.name;
+    // }
   },
   filters: {
 
@@ -98,32 +102,69 @@ export default {
   }
 }
 </script>
-<style scoped>
-.layout {
+<style lang="scss">
+.layout-contanier {
   background: #f5f7f9;
   position: relative;
   overflow: hidden;
   height: 100vh;
-}
 
-.ivu-layout {
-  height: 100%;
-}
+  .ivu-layout-header {
+    background-color: #ffffff;
+    box-sizing: border-box;
+    padding: 0;
+    width: 100%;
+    border: 1px solid #eeeeee;
 
-.layout-logo {
-  width: 100px;
-  height: 30px;
-  background: #5b6270;
-  border-radius: 3px;
-  float: left;
-  position: relative;
-  top: 15px;
-  left: 20px;
-}
+    .layout-nav {
+      display: flex;
+      float: right;
+      margin-right: 40px;
 
-.layout-nav {
-  width: 420px;
-  margin: 0 auto;
-  margin-right: 20px;
+      .ivu-input-wrapper {
+        .ivu-input {
+          border: none;
+
+          &:focus {
+            border: none;
+            box-shadow: none;
+          }
+        }
+      }
+
+      .expand {
+        font-size: 24px;
+      }
+
+      .ivu-dropdown {
+        margin-left: 20px;
+        .ivu-avatar {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+
+  .ivu-layout {
+    height: 100%;
+
+    .ivu-menu {
+      height: 100%;
+    }
+  }
+
+  .layout-logo {
+    width: 150px;
+    height: 50px;
+    // background: url(./assets/logo.png) no-repeat center center;
+    // background-size: contain;
+    border-radius: 3px;
+    float: left;
+    position: relative;
+    font-size: 36px;
+    // top: 15px;
+    left: 20px;
+    text-shadow: 3px 5px 5px #656B79;
+  }
 }
 </style>
